@@ -15,59 +15,58 @@
 
   <style>
     body {
-      display: flex;
-      justify-content: center;
+      display: flex; 
+      justify-content: center; 
       align-items: center;
-      height: 100vh;
+      height: 100vh; 
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: url("img/shrek.jpg") no-repeat center center fixed;
+      font-family: "Comic Sans MS", "Comic Sans", cursive; /* 👈 alles in Comic Sans */
+      background: url("shrek.jpg") no-repeat center center fixed; /* 👈 jouw Shrek afbeelding */
       background-size: cover;
+      color: #333; 
+      text-align: center;
     }
     .box {
       background: rgba(255, 255, 255, 0.7); /* half doorzichtig wit */
-      padding: 2rem;
+      padding: 2rem; 
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      max-width: 400px;
-      text-align: center;
+      max-width: 420px;
     }
-    h1 {
-      margin: 0 0 1rem;
-      font-size: 1.5rem;
-      color: #222;
-    }
-    p {
-      margin: 0;
-      font-size: 1rem;
-      color: #333;
-    }
+    h1 { margin: 0 0 1rem; font-size: 1.5rem; }
+    p  { margin: 0; font-size: 1rem; }
   </style>
 </head>
 <body>
-  <!-- ✅ Custom laadpagina -->
+  <!-- Custom laadpagina -->
   <div class="box">
-    <h1>WELKON</h1>
+    <h1>EVEN GEDULD</h1>
     <p>Timo is zijn kwast aan het klaarmaken voor je!</p>
   </div>
 
-  <script>
-    const today = new Date().toISOString().split("T")[0];
+  <noscript>
+  <p>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet... <a href="https://standaard-link.com">Klik hier voor plan B!</a></p>
+</noscript>
 
-    // Schema met dag-links
+  <script>
+    // === PREVIEW-MODUS ===
+    const preview = new URLSearchParams(location.search).has('preview');
+
+    // === Dagelijks schema ===
+    const today = new Date().toISOString().split("T")[0];
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0aA",
       "2025-09-18": "https://www.youtube.com/watch?v=zSWNWWREtsI",
       "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1"
     };
+    const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    const dest = schedule[today] || "https://standaard-link.com";
+    function go() { window.location.replace(dest); }
 
-    // Redirect na 0,8 seconde zodat de custom pagina zichtbaar is
-    setTimeout(() => {
-      window.location.href = dest;
-    }, 800);
+    if (!preview) {
+      setTimeout(go, 800);
+    }
   </script>
 </body>
 </html>
