@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JJFMCD79FS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JJFMCD79FS');
+  </script>
+
   <meta charset="UTF-8">
   <title>QR Redirect per dag</title>
-  <script>
-    const now = new Date();
-    const today = now.toISOString().split("T")[0]; 
-    const schedule = {
-      "2025-09-16": "https://www.gaatricknoglive.nl/",
-      "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0oA",
-      "2025-09-18": "https://www.youtube.com/watch?v=zSWNWWREtsI",
-      "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlxmDgKmo?si=a0c3a9236e7744e1",
-    };
-    if (schedule[today]) {
-      window.location.href = schedule[today];
-    } else {
-      window.location.href = "https://standaard-link.com";
-    }
-  </script>
 </head>
 <body>
   Je wordt doorgestuurd...
+  <script>
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+
+    const schedule = {
+      "2025-09-16": "https://www.gaatricknoglive.nl/",
+      "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0aA",
+      "2025-09-18": "https://www.youtube.com/watch?v=zSWNWWREtsI",
+      "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1"
+    };
+
+    if (schedule[today]) {
+      setTimeout(() => { window.location.href = schedule[today]; }, 400);
+    } else {
+      setTimeout(() => { window.location.href = "https://www.youtube.com/watch?v=rv9zEcispCU"; }, 400);
+    }
+  </script>
 </body>
 </html>
