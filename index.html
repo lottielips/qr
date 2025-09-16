@@ -44,7 +44,7 @@
   </style>
 </head>
 <body>
-  <!-- ✅ Dit is de custom laadpagina -->
+  <!-- ✅ Custom laadpagina met nieuwe tekst -->
   <div class="box">
     <h1>Welkom!</h1>
     <p>Even geduld, Timo is zijn kwast aan het klaarmaken voor je!</p>
@@ -61,9 +61,9 @@
       "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1"
     };
 
-    const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
+    const dest = schedule[today] || "https://standaard-link.com";
 
-    // Redirect na 0,5 seconde (zodat de welkomstpagina zichtbaar is)
+    // Redirect na 0,5 seconde
     setTimeout(() => {
       window.location.href = dest;
     }, 500);
