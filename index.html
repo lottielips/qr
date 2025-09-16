@@ -13,60 +13,55 @@
     gtag('config', 'G-JJFMCD79FS', { transport_type: 'beacon' });
   </script>
 
-  <!-- Styling voor de custom welkomstpagina -->
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-      text-align: center;
+      background: #f4f4f4; color: #333; text-align: center;
     }
     .box {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
+      background: #fff; padding: 2rem; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 400px;
+      max-width: 420px;
     }
-    h1 {
-      margin: 0 0 1rem;
-      font-size: 1.5rem;
-    }
-    p {
-      margin: 0;
-      font-size: 1rem;
-    }
+    h1 { margin: 0 0 1rem; font-size: 1.5rem; }
+    p  { margin: 0; font-size: 1rem; }
   </style>
 </head>
 <body>
-  <!-- ✅ Custom laadpagina met nieuwe tekst -->
+  <!-- Custom laadpagina -->
   <div class="box">
     <h1>Welkom!</h1>
-    <p>Even geduld, Timo is zijn kwast aan het klaarmaken voor je!</p>
+    <p>Even geduld, Timo is zijn kwast voor je aan het klaarmaken!</p>
   </div>
 
-  <script>
-    const today = new Date().toISOString().split("T")[0];
+  <noscript>
+    <p>JavaScript staat uit. <a href="https://standaard-link.com">Klik hier om door te gaan</a>.</p>
+  </noscript>
 
-    // Schema met dag-links
+  <script>
+    // === PREVIEW-MODUS ===
+    // Bezoek je pagina met ?preview=1 om de welkomstpagina te zien zonder redirect.
+    const preview = new URLSearchParams(location.search).has('preview');
+
+    // === Dagelijks schema ===
+    const today = new Date().toISOString().split("T")[0];
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0aA",
       "2025-09-18": "https://www.youtube.com/watch?v=zSWNWWREtsI",
       "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1"
     };
+    const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    const dest = schedule[today] || "https://standaard-link.com";
+    function go() { window.location.replace(dest); }
 
-    // Redirect na 0,5 seconde
-    setTimeout(() => {
-      window.location.href = dest;
-    }, 500);
+    // Alleen redirecten als we niet in preview-modus zijn
+    if (!preview) {
+      // korte delay zodat je de custom pagina ziet en GA kan meten
+      setTimeout(go, 800);
+    }
   </script>
 </body>
 </html>
