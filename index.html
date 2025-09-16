@@ -13,6 +13,7 @@
     gtag('config', 'G-JJFMCD79FS', { transport_type: 'beacon' });
   </script>
 
+  <!-- Styling voor de custom welkomstpagina -->
   <style>
     body {
       display: flex;
@@ -43,15 +44,16 @@
   </style>
 </head>
 <body>
+  <!-- ✅ Dit is de custom laadpagina -->
   <div class="box">
     <h1>Welkom!</h1>
-    <p>Even geduld, Timo is zijn kwast voor je aan het klaarmaken!</p>
+    <p>Even geduld, we sturen je nu door…</p>
   </div>
 
   <script>
     const today = new Date().toISOString().split("T")[0];
 
-    // Dagelijks schema met links
+    // Schema met dag-links
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0aA",
@@ -61,22 +63,10 @@
 
     const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    // Stuur event naar Google Analytics en redirect daarna
-    let redirected = false;
-    const go = () => {
-      if (redirected) return;
-      redirected = true;
-      window.location.replace(dest);
-    };
-
-    gtag('event', 'qr_scan', {
-      destination: dest,
-      event_callback: go,
-      event_timeout: 400
-    });
-
-    // extra fallback
-    setTimeout(go, 600);
+    // Redirect na 0,5 seconde (zodat de welkomstpagina zichtbaar is)
+    setTimeout(() => {
+      window.location.href = dest;
+    }, 500);
   </script>
 </body>
 </html>
