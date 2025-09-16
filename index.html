@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
+  <title>QR redirect</title>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-JJFMCD79FS"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-JJFMCD79FS');
+    gtag('config', 'G-JJFMCD79FS', { transport_type: 'beacon' });
   </script>
 
-  <meta charset="UTF-8">
-  <title>QR Redirect per dag</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+    }
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
- Even geduld, Timo is zijn kwast aan het klaar maken voor je!
-</body>
+  <div class="box">
+    <h1>Welkom!</h1>
+    <p>Even geduld, Timo is zijn kwast voor je aan het klaarmaken!</p>
+  </div>
 
   <script>
-    const now = new Date();
-    const today = now.toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
 
+    // Dagelijks schema met links
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0aA",
@@ -28,11 +59,24 @@
       "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1"
     };
 
-    if (schedule[today]) {
-      setTimeout(() => { window.location.href = schedule[today]; }, 400);
-    } else {
-      setTimeout(() => { window.location.href = "https://www.youtube.com/watch?v=rv9zEcispCU"; }, 400);
-    }
+    const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
+
+    // Stuur event naar Google Analytics en redirect daarna
+    let redirected = false;
+    const go = () => {
+      if (redirected) return;
+      redirected = true;
+      window.location.replace(dest);
+    };
+
+    gtag('event', 'qr_scan', {
+      destination: dest,
+      event_callback: go,
+      event_timeout: 400
+    });
+
+    // extra fallback
+    setTimeout(go, 600);
   </script>
 </body>
 </html>
