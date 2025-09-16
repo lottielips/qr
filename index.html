@@ -2,15 +2,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>QR Redirect</title>
+  <title>QR Redirect per dag</title>
   <script>
     const now = new Date();
-    const targetDate = new Date("2025-16-09T00:00:00");
-
-    if (now >= targetDate) {
-      window.location.href = "https://tweede-link.com";
+    const today = now.toISOString().split("T")[0]; 
+    const schedule = {
+      "2025-09-16": "https://www.gaatricknoglive.nl/",
+      "2025-09-17": "https://www.youtube.com/watch?v=hjGJIK9u0oA",
+      "2025-09-18": "https://www.youtube.com/watch?v=zSWNWWREtsI",
+      "2025-09-19": "https://open.spotify.com/playlist/56zpddPODU4JNMlxmDgKmo?si=a0c3a9236e7744e1",
+    };
+    if (schedule[today]) {
+      window.location.href = schedule[today];
     } else {
-      window.location.href = "https://www.youtube.com/watch?v=LF3W1Ed-x5c";
+      window.location.href = "https://standaard-link.com";
     }
   </script>
 </head>
