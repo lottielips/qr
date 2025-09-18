@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
@@ -13,34 +13,52 @@
     gtag('config', 'G-JJFMCD79FS', { transport_type: 'beacon' });
   </script>
 
-  <!-- Comic Neue van Google Fonts (altijd beschikbaar) -->
+  <!-- Comic Neue (fallback voor Comic Sans look) -->
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     body {
-      display: flex; 
-      justify-content: center; 
-      align-items: center;
-      height: 100vh; 
-      margin: 0;
-      font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive; /* altijd Comic Sans look */
-      background: url("shrek.jpg") no-repeat center center fixed; /* 👈 jouw Shrek afbeelding */
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; margin: 0;
+      font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive;
+      background: url("shrek.jpg") no-repeat center center fixed;
       background-size: cover;
-      color: #333; 
-      text-align: center;
+      color: #333; text-align: center;
     }
     .box {
-      background: rgba(255, 255, 255, 0.7); /* half doorzichtig wit */
-      padding: 2rem; 
-      border-radius: 12px;
+      background: rgba(255,255,255,0.7);
+      padding: 2rem; border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       max-width: 420px;
     }
     h1 { margin: 0 0 1rem; font-size: 1.5rem; }
-    p  { margin: 0; font-size: 1rem; }
+    p  { margin: 0.25rem 0; font-size: 1rem; }
+
+    /* ✅ Rode ronde knop linksboven */
+    .daily-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: red;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .daily-link:hover {
+      background: darkred;
+    }
   </style>
 </head>
 <body>
+  <!-- ✅ Rode ronde knop voor vaste link -->
+  <a class="daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" target="_blank" rel="noopener">
+    Dagelijkse KUD lied
+  </a>
+
   <!-- Custom laadpagina -->
   <div class="box">
     <h1>EVEN GEDULD</h1>
@@ -48,15 +66,17 @@
   </div>
 
   <noscript>
-    <p>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet... <a href="shrek2.jpg">Klik hier voor plan B!</a></p>
+    <p>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet...
+      <a href="shrek2.jpg">Klik hier voor plan B!</a>
+    </p>
   </noscript>
 
   <script>
-    // === PREVIEW-MODUS ===
+    // === PREVIEW-MODUS === ?preview=1 laat de pagina staan zonder redirect
     const preview = new URLSearchParams(location.search).has('preview');
 
-    // === Dagelijks schema ===
-    const today = new Date().toLocaleDateString("sv-SE"); // lokale datum als YYYY-MM-DD
+    // === Dagelijks schema (lokale datum) ===
+    const today = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=m-6Pxc4fEcI",
@@ -64,15 +84,12 @@
       "2025-09-19": "https://www.youtube.com/watch?v=yaapnjOofXI",
       "2025-09-20": "https://www.youtube.com/watch?v=zSWNWWREtsI",
       "2025-09-21": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1",
-      "2025-09-22": "https://www.youtube.com/watch?v=-VSi_VAK8Ek",
+      "2025-09-22": "https://www.youtube.com/watch?v=-VSi_VAK8Ek"
     };
     const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    function go() { window.location.replace(dest); }
-
-    if (!preview) {
-      setTimeout(go, 800);
-    }
+    function go(){ window.location.replace(dest); }
+    if (!preview) setTimeout(go, 800);
   </script>
 </body>
 </html>
