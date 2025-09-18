@@ -17,68 +17,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      display: flex; justify-content: center; align-items: center;
-      height: 100vh; margin: 0;
-      font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive;
-      background: url("shrek.jpg") no-repeat center center fixed;
-      background-size: cover;
-      color: #333; text-align: center;
-      position: relative;
+    body{
+      display:flex;justify-content:center;align-items:center;
+      height:100vh;margin:0;
+      font-family:'Comic Neue','Comic Sans MS','Comic Sans',cursive;
+      background:url("shrek.jpg") no-repeat center center fixed;
+      background-size:cover;color:#333;text-align:center;position:relative;
     }
-    .box {
-      background: rgba(255,255,255,0.7);
-      padding: 2rem; border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      max-width: 420px;
+    .box{
+      background:rgba(255,255,255,.7);padding:2rem;border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,.3);max-width:420px;
     }
-    h1 { margin: 0 0 1rem; font-size: 1.5rem; }
-    p  { margin: 0.25rem 0; font-size: 1rem; }
+    h1{margin:0 0 1rem;font-size:1.5rem}
+    p{margin:.25rem 0;font-size:1rem}
 
-    /* ✅ Knop-styling (zelfde basis voor KUD en Bankstaanders) */
-    .floating-link {
-      position: fixed;
-      top: 16px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      font-weight: bold;
-      text-decoration: none;
-      color: white;
-      background-size: cover;
-      background-position: center;
-      z-index: 9999;
-      cursor: pointer;
+    /* Knoppen */
+    .floating-link{
+      position:fixed;top:16px;padding:12px 18px;border-radius:999px;
+      box-shadow:0 4px 10px rgba(0,0,0,.3);font-weight:700;text-decoration:none;
+      color:#fff;z-index:9999;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;
     }
-    .daily-link { left: 16px; background-color: red; }
-    .bank-link { right: 16px; background-image: url("bankzitters.jpg"); }
-    .daily-link:hover { background: darkred; }
-    .bank-link span {
-      background: rgba(0,0,0,0.5);
-      padding: 6px 10px;
-      border-radius: 12px;
-    }
+    .daily-link{left:16px;background:red}
+    .daily-link:hover{background:darkred}
+
+    .bank-link{right:16px;background-image:url("bankzitters.jpg");background-size:cover;background-position:center;color:#fff}
+    .bank-link span{background:rgba(0,0,0,.55);padding:6px 10px;border-radius:12px}
   </style>
 </head>
 <body>
-  <!-- ✅ VASTE LINKS -->
+  <!-- VASTE LINK: KUD -->
   <a id="dailyLink" class="floating-link daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
     Dagelijkse KUD lied
   </a>
 
+  <!-- VASTE LINK: BANKZITTERS -->
   <a id="bankLink" class="floating-link bank-link" href="https://www.youtube.com/watch?v=xvFZjo5PgG0" rel="noopener" target="_blank">
     <span>Dagelijkse bankstaanders video</span>
   </a>
 
-  <!-- Welkomstbox -->
   <div class="box">
     <h1>EVEN GEDULD</h1>
     <p>Timo is zijn kwast aan het klaarmaken voor je!</p>
   </div>
 
   <script>
-    const preview = new URLSearchParams(location.search).has('preview');
-    const today = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD
+    // ===== Config =====
+    const preview = new URLSearchParams(location.search).get('preview') === '1';
+
+    // Lokale datum veilig formatteren als YYYY-MM-DD
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth()+1).padStart(2,'0');
+    const dd = String(now.getDate()).padStart(2,'0');
+    const today = `${yyyy}-${mm}-${dd}`;
+
+    // Dagelijks schema
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=m-6Pxc4fEcI",
@@ -88,25 +81,47 @@
       "2025-09-21": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1",
       "2025-09-22": "https://www.youtube.com/watch?v=-VSi_VAK8Ek"
     };
-    const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
+    const fallback = "https://www.youtube.com/watch?v=rv9zEcispCU";
+    const dest = schedule[today] || fallback;
 
+    // ===== Logica =====
     let manualNav = false;
     let redirectTimer = null;
+    let safetyTimer = null;
 
     function go(){
-      if (manualNav) return;
+      if (manualNav) return;           // klik op vaste knop? -> niet auto-redirecten
       window.location.replace(dest);
     }
 
-    if (!preview) {
-      redirectTimer = setTimeout(go, 1200);
+    function startRedirects(){
+      if (preview) return;             // preview-modus: nooit auto-redirect
+      redirectTimer = setTimeout(go, 1200); // hoofd-timer
+      safetyTimer   = setTimeout(go, 4000); // extra fallback (iOS/Safari)
+      document.addEventListener('visibilitychange', () => {
+        if (!manualNav && document.visibilityState === 'visible') go();
+      });
     }
 
-    // ✅ Knop logica
     function setupManualLink(id){
       const el = document.getElementById(id);
+      if (!el) return;
       const url = el.getAttribute('href');
       el.addEventListener('click', (e) => {
         e.preventDefault();
         manualNav = true;
-        if (redirectTimer) clearTimeout(redi
+        if (redirectTimer) clearTimeout(redirectTimer);
+        if (safetyTimer)   clearTimeout(safetyTimer);
+        window.location.href = url;
+      }, { passive: false });
+    }
+
+    // Start
+    window.addEventListener('DOMContentLoaded', () => {
+      setupManualLink('dailyLink');
+      setupManualLink('bankLink');
+      startRedirects();
+    });
+  </script>
+</body>
+</html>
