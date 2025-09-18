@@ -31,38 +31,46 @@
     h1{margin:0 0 1rem;font-size:1.5rem}
     p{margin:.25rem 0;font-size:1rem}
 
-    /* Basis knopstijl */
+    /* Knoppen */
     .floating-link{
       position:fixed;padding:12px 18px;border-radius:999px;
       box-shadow:0 4px 10px rgba(0,0,0,.3);
-      font-weight:700;text-decoration:none;
-      color:#fff;z-index:9999;cursor:pointer;
+      font-weight:700;text-decoration:none;color:#fff;z-index:9999;cursor:pointer;
       display:inline-flex;align-items:center;justify-content:center;
       background-size:cover;background-position:center;
     }
-
-    /* Specifieke knoppen */
     .daily-link{top:16px;left:16px;background:red}
     .daily-link:hover{background:darkred}
-
     .bank-link{top:16px;right:16px;background-image:url("bankzitters.jpg")}
     .bank-link span{background:rgba(0,0,0,.55);padding:6px 10px;border-radius:12px}
-
     .patrick-link{bottom:16px;left:16px;background-image:url("patrick.jpg")}
     .patrick-link span{background:rgba(0,0,0,.55);padding:6px 10px;border-radius:12px}
+
+    /* ⛑️ Late fallback box (verstopt tot nodig) */
+    .fallback{
+      position:fixed;inset:0;display:none;place-items:center;
+      background:rgba(0,0,0,.25);
+    }
+    .fallback .card{
+      background:rgba(255,255,255,.9);padding:1.2rem 1.5rem;border-radius:14px;
+      box-shadow:0 6px 16px rgba(0,0,0,.35);max-width:520px;
+    }
+    .fallback h2{margin:.2rem 0 0.6rem;font-size:1.3rem}
+    .fallback a{
+      display:inline-block;margin-top:.4rem;padding:.5rem .9rem;border-radius:10px;
+      background:#ffcc00;text-decoration:none;color:#222;font-weight:700;
+    }
   </style>
 </head>
 <body>
-  <!-- ✅ VASTE KNOPPEN -->
-  <a id="dailyLink" class="floating-link daily-link" href="https://JOUW_VASTE_KUD_LINK" rel="noopener" target="_blank">
+  <!-- VASTE KNOPPEN -->
+  <a id="dailyLink" class="floating-link daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
     Dagelijkse KUD lied
   </a>
-
-  <a id="bankLink" class="floating-link bank-link" href="https://JOUW_VASTE_BANK_LINK" rel="noopener" target="_blank">
+  <a id="bankLink" class="floating-link bank-link" href="https://www.youtube.com/watch?v=xvFZjo5PgG0" rel="noopener" target="_blank">
     <span>Dagelijkse bankstaanders video</span>
   </a>
-
-  <a id="patrickLink" class="floating-link patrick-link" href="https://JOUW_VASTE_PATRICK_LINK" rel="noopener" target="_blank">
+  <a id="patrickLink" class="floating-link patrick-link" href="https://www.youtube.com/watch?v=FV83Vi1R0Yg" rel="noopener" target="_blank">
     <span>Dagelijkse ASMR Patrick</span>
   </a>
 
@@ -72,17 +80,37 @@
     <p>Timo is zijn kwast aan het klaarmaken voor je!</p>
   </div>
 
+  <!-- ⛔ JavaScript uit -->
+  <noscript>
+    <div class="fallback" style="display:grid">
+      <div class="card">
+        <h2>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet..</h2>
+        <p>Klik hieronder om toch verder te gaan.</p>
+        <a href="https://www.youtube.com/watch?v=rv9zEcispCU">Ga verder</a>
+      </div>
+    </div>
+  </noscript>
+
+  <!-- ⏳ Late fallback (als redirect te lang duurt) -->
+  <div id="lateFallback" class="fallback">
+    <div class="card">
+      <h2>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet..</h2>
+      <p>Het doorsturen duurt langer dan verwacht. Klik hieronder om verder te gaan.</p>
+      <a id="lateLink" href="#" rel="noopener">Handmatig verder</a>
+    </div>
+  </div>
+
   <script>
     const preview = new URLSearchParams(location.search).get('preview') === '1';
 
-    // Lokale datum -> YYYY-MM-DD
+    // Datum -> YYYY-MM-DD (lokaal)
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth()+1).padStart(2,'0');
     const dd = String(now.getDate()).padStart(2,'0');
     const today = `${yyyy}-${mm}-${dd}`;
 
-    // === Dagelijks schema (uitgebreid) ===
+    // Dagelijks schema
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
       "2025-09-17": "https://www.youtube.com/watch?v=m-6Pxc4fEcI",
@@ -91,8 +119,6 @@
       "2025-09-20": "https://www.youtube.com/watch?v=zSWNWWREtsI",
       "2025-09-21": "https://open.spotify.com/playlist/56zpddPODU4JNMlXmDgKmo?si=a0c3a9236e7744e1",
       "2025-09-22": "https://www.youtube.com/watch?v=-VSi_VAK8Ek",
-
-      /* 👇 jouw extra links toegewezen per datum */
       "2025-09-23": "https://www.youtube.com/watch?v=TeFiIjMIlRw",
       "2025-09-24": "https://www.youtube.com/watch?v=Ch1aVmjvYTI",
       "2025-09-25": "https://www.youtube.com/watch?v=PSpCpDb95Bw",
@@ -108,19 +134,32 @@
     const fallback = "https://www.youtube.com/watch?v=rv9zEcispCU";
     const dest = schedule[today] || fallback;
 
+    // Fallback-box voorbereiden
+    const lateBox = document.getElementById('lateFallback');
+    const lateLink = document.getElementById('lateLink');
+    lateLink.href = dest;
+
     let manualNav = false;
     let redirectTimer = null;
     let safetyTimer = null;
+    let shownLate = false;
 
     function go(){
       if (manualNav) return;
       window.location.replace(dest);
     }
 
+    function showLate(){
+      if (manualNav || shownLate || preview) return;
+      shownLate = true;
+      lateBox.style.display = 'grid';
+    }
+
     function startRedirects(){
       if (preview) return;
       redirectTimer = setTimeout(go, 1200);
-      safetyTimer   = setTimeout(go, 4000);  // extra fallback
+      safetyTimer   = setTimeout(go, 4000);
+      setTimeout(showLate, 6000); // toon funny fallback na 6s
       document.addEventListener('visibilitychange', () => {
         if (!manualNav && document.visibilityState === 'visible') go();
       });
@@ -139,7 +178,6 @@
       }, { passive: false });
     }
 
-    // Start
     window.addEventListener('DOMContentLoaded', () => {
       setupManualLink('dailyLink');
       setupManualLink('bankLink');
