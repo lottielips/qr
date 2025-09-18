@@ -35,29 +35,39 @@
     h1 { margin: 0 0 1rem; font-size: 1.5rem; }
     p  { margin: 0.25rem 0; font-size: 1rem; }
 
-    /* Rode ronde knop linksboven – altijd klikbaar boven alles */
-    .daily-link {
+    /* ✅ Knop-styling (zelfde basis voor KUD en Bankstaanders) */
+    .floating-link {
       position: fixed;
       top: 16px;
-      left: 16px;
-      background: red;
-      color: #fff;
-      font-weight: bold;
-      text-decoration: none;
       padding: 12px 18px;
       border-radius: 999px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: background 0.2s ease;
-      z-index: 9999;           /* ← bovenaan */
-      cursor: pointer;         /* betere klik-feedback */
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      z-index: 9999;
+      cursor: pointer;
     }
+    .daily-link { left: 16px; background-color: red; }
+    .bank-link { right: 16px; background-image: url("bankzitters.jpg"); }
     .daily-link:hover { background: darkred; }
+    .bank-link span {
+      background: rgba(0,0,0,0.5);
+      padding: 6px 10px;
+      border-radius: 12px;
+    }
   </style>
 </head>
 <body>
-  <!-- ✅ VASTE LINK KNOP -->
-  <a id="dailyLink" class="daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
+  <!-- ✅ VASTE LINKS -->
+  <a id="dailyLink" class="floating-link daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
     Dagelijkse KUD lied
+  </a>
+
+  <a id="bankLink" class="floating-link bank-link" href="https://www.youtube.com/watch?v=xvFZjo5PgG0" rel="noopener" target="_blank">
+    <span>Dagelijkse bankstaanders video</span>
   </a>
 
   <!-- Welkomstbox -->
@@ -66,17 +76,8 @@
     <p>Timo is zijn kwast aan het klaarmaken voor je!</p>
   </div>
 
-  <noscript>
-    <p>🖌️ Timo was klaar met zijn kwast, maar jouw browser niet...
-      <a href="shrek2.jpg">Klik hier voor plan B!</a>
-    </p>
-  </noscript>
-
   <script>
-    // Preview-modus: ?preview=1 laat de pagina staan zonder auto-redirect
     const preview = new URLSearchParams(location.search).has('preview');
-
-    // Dagelijks schema (lokale datum)
     const today = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD
     const schedule = {
       "2025-09-16": "https://www.gaatricknoglive.nl/",
@@ -89,28 +90,23 @@
     };
     const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    let manualNav = false;        // ← vlag: gebruiker kiest de vaste link
+    let manualNav = false;
     let redirectTimer = null;
 
     function go(){
-      if (manualNav) return;      // ← negeer auto-redirect als op knop geklikt
+      if (manualNav) return;
       window.location.replace(dest);
     }
 
-    // Start auto-redirect (iets langere delay geeft tijd om te klikken)
     if (!preview) {
       redirectTimer = setTimeout(go, 1200);
     }
 
-    // Klik op vaste knop: timer stoppen, vlag zetten, en meteen naar vaste link
-    const linkEl = document.getElementById('dailyLink');
-    linkEl.addEventListener('click', (e) => {
-      e.preventDefault();               // onderbreek default anchor
-      manualNav = true;                 // markeer handmatige navigatie
-      if (redirectTimer) clearTimeout(redirectTimer);
-      const fixedURL = linkEl.getAttribute('href');
-      window.location.href = fixedURL;  // ga direct naar vaste link
-    }, { passive: false });
-  </script>
-</body>
-</html>
+    // ✅ Knop logica
+    function setupManualLink(id){
+      const el = document.getElementById(id);
+      const url = el.getAttribute('href');
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        manualNav = true;
+        if (redirectTimer) clearTimeout(redi
