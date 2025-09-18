@@ -24,6 +24,7 @@
       background: url("shrek.jpg") no-repeat center center fixed;
       background-size: cover;
       color: #333; text-align: center;
+      position: relative;
     }
     .box {
       background: rgba(255,255,255,0.7);
@@ -34,26 +35,28 @@
     h1 { margin: 0 0 1rem; font-size: 1.5rem; }
     p  { margin: 0.25rem 0; font-size: 1rem; }
 
-    /* Rode ronde knop linksboven */
+    /* Rode ronde knop linksboven – altijd klikbaar boven alles */
     .daily-link {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+      position: fixed;
+      top: 16px;
+      left: 16px;
       background: red;
-      color: white;
+      color: #fff;
       font-weight: bold;
       text-decoration: none;
       padding: 12px 18px;
-      border-radius: 50px;
+      border-radius: 999px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: background 0.3s;
+      transition: background 0.2s ease;
+      z-index: 9999;           /* ← bovenaan */
+      cursor: pointer;         /* betere klik-feedback */
     }
     .daily-link:hover { background: darkred; }
   </style>
 </head>
 <body>
-  <!-- VASTE LINK KNOP -->
-  <a id="dailyLink" class="daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c">
+  <!-- ✅ VASTE LINK KNOP -->
+  <a id="dailyLink" class="daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
     Dagelijkse KUD lied
   </a>
 
@@ -70,7 +73,7 @@
   </noscript>
 
   <script>
-    // Preview-modus: ?preview=1
+    // Preview-modus: ?preview=1 laat de pagina staan zonder auto-redirect
     const preview = new URLSearchParams(location.search).has('preview');
 
     // Dagelijks schema (lokale datum)
@@ -86,21 +89,28 @@
     };
     const dest = schedule[today] || "https://www.youtube.com/watch?v=rv9zEcispCU";
 
-    function go(){ window.location.replace(dest); }
-
-    // Timer starten voor auto-redirect
+    let manualNav = false;        // ← vlag: gebruiker kiest de vaste link
     let redirectTimer = null;
-    if (!preview) {
-      redirectTimer = setTimeout(go, 800);
+
+    function go(){
+      if (manualNav) return;      // ← negeer auto-redirect als op knop geklikt
+      window.location.replace(dest);
     }
 
-    // Klik op vaste knop: timer stoppen en direct naar vaste link
-    const fixedURL = document.getElementById('dailyLink').getAttribute('href');
-    document.getElementById('dailyLink').addEventListener('click', (e) => {
-      e.preventDefault();           // voorkom dat anker de default doet
-      if (redirectTimer) clearTimeout(redirectTimer); // stop auto-redirect
-      window.location.href = fixedURL; // ga meteen naar vaste link
-    });
+    // Start auto-redirect (iets langere delay geeft tijd om te klikken)
+    if (!preview) {
+      redirectTimer = setTimeout(go, 1200);
+    }
+
+    // Klik op vaste knop: timer stoppen, vlag zetten, en meteen naar vaste link
+    const linkEl = document.getElementById('dailyLink');
+    linkEl.addEventListener('click', (e) => {
+      e.preventDefault();               // onderbreek default anchor
+      manualNav = true;                 // markeer handmatige navigatie
+      if (redirectTimer) clearTimeout(redirectTimer);
+      const fixedURL = linkEl.getAttribute('href');
+      window.location.href = fixedURL;  // ga direct naar vaste link
+    }, { passive: false });
   </script>
 </body>
 </html>
