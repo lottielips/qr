@@ -31,40 +31,51 @@
     h1{margin:0 0 1rem;font-size:1.5rem}
     p{margin:.25rem 0;font-size:1rem}
 
-    /* Knoppen */
+    /* Basis knopstijl */
     .floating-link{
-      position:fixed;top:16px;padding:12px 18px;border-radius:999px;
-      box-shadow:0 4px 10px rgba(0,0,0,.3);font-weight:700;text-decoration:none;
-      color:#fff;z-index:9999;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;
+      position:fixed;padding:12px 18px;border-radius:999px;
+      box-shadow:0 4px 10px rgba(0,0,0,.3);
+      font-weight:700;text-decoration:none;
+      color:#fff;z-index:9999;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      background-size:cover;background-position:center;
     }
-    .daily-link{left:16px;background:red}
+
+    /* Specifieke knoppen */
+    .daily-link{top:16px;left:16px;background:red}
     .daily-link:hover{background:darkred}
 
-    .bank-link{right:16px;background-image:url("bankzitters.jpg");background-size:cover;background-position:center;color:#fff}
+    .bank-link{top:16px;right:16px;background-image:url("bankzitters.jpg")}
     .bank-link span{background:rgba(0,0,0,.55);padding:6px 10px;border-radius:12px}
+
+    .patrick-link{bottom:16px;right:16px;background-image:url("patrick.jpg")}
+    .patrick-link span{background:rgba(0,0,0,.55);padding:6px 10px;border-radius:12px}
   </style>
 </head>
 <body>
-  <!-- VASTE LINK: KUD -->
+  <!-- ✅ VASTE KNOPPEN -->
   <a id="dailyLink" class="floating-link daily-link" href="https://www.youtube.com/watch?v=g6hxlzAaN6c" rel="noopener" target="_blank">
     Dagelijkse KUD lied
   </a>
 
-  <!-- VASTE LINK: BANKZITTERS -->
   <a id="bankLink" class="floating-link bank-link" href="https://www.youtube.com/watch?v=xvFZjo5PgG0" rel="noopener" target="_blank">
     <span>Dagelijkse bankstaanders video</span>
   </a>
 
+  <a id="patrickLink" class="floating-link patrick-link" href="https://www.youtube.com/watch?v=FV83Vi1R0Yg" rel="noopener" target="_blank">
+    <span>Dagelijkse ASMR Patrick</span>
+  </a>
+
+  <!-- Welkomstbox -->
   <div class="box">
     <h1>EVEN GEDULD</h1>
     <p>Timo is zijn kwast aan het klaarmaken voor je!</p>
   </div>
 
   <script>
-    // ===== Config =====
     const preview = new URLSearchParams(location.search).get('preview') === '1';
 
-    // Lokale datum veilig formatteren als YYYY-MM-DD
+    // Datum formatteren
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth()+1).padStart(2,'0');
@@ -84,20 +95,19 @@
     const fallback = "https://www.youtube.com/watch?v=rv9zEcispCU";
     const dest = schedule[today] || fallback;
 
-    // ===== Logica =====
     let manualNav = false;
     let redirectTimer = null;
     let safetyTimer = null;
 
     function go(){
-      if (manualNav) return;           // klik op vaste knop? -> niet auto-redirecten
+      if (manualNav) return;
       window.location.replace(dest);
     }
 
     function startRedirects(){
-      if (preview) return;             // preview-modus: nooit auto-redirect
-      redirectTimer = setTimeout(go, 1200); // hoofd-timer
-      safetyTimer   = setTimeout(go, 4000); // extra fallback (iOS/Safari)
+      if (preview) return;
+      redirectTimer = setTimeout(go, 1200);
+      safetyTimer   = setTimeout(go, 4000);
       document.addEventListener('visibilitychange', () => {
         if (!manualNav && document.visibilityState === 'visible') go();
       });
@@ -120,6 +130,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       setupManualLink('dailyLink');
       setupManualLink('bankLink');
+      setupManualLink('patrickLink');
       startRedirects();
     });
   </script>
